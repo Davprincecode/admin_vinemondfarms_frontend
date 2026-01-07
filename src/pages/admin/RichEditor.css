@@ -1,0 +1,108 @@
+.rich-editor{
+    border: 1px solid;
+    padding: 40px;
+}
+.rich-editor svg{
+    display: block;
+    padding: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  border: 2px solid red;
+}
+
+.editor {
+  border: 2px solid #ccc;
+  min-height: 300px;
+  padding: 12px;
+  background: #fff;
+}
+
+.resizable-image {
+  position: relative;
+  display: inline-block;
+  border: 2px solid transparent;
+}
+
+.resizable-image.selected {
+  border-color: blue;
+}
+
+.resizable-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.resizer {
+  width: 10px;
+  height: 10px;
+  background: #007bff;
+  position: absolute;
+  display: none;
+  z-index: 10;
+}
+
+.resizable-image.selected .resizer {
+  display: block;
+}
+
+/* Corners */
+.top-left {
+  top: -5px;
+  left: -5px;
+  cursor: nwse-resize;
+}
+
+.top-right {
+  top: -5px;
+  right: -5px;
+  cursor: nesw-resize;
+}
+
+.bottom-left {
+  bottom: -5px;
+  left: -5px;
+  cursor: nesw-resize;
+}
+
+.bottom-right {
+  bottom: -5px;
+  right: -5px;
+  cursor: nwse-resize;
+}
+
+/* Sides */
+.top {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.bottom {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.left {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.right {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
