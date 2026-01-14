@@ -9,14 +9,9 @@ import { toast } from 'react-toastify';
 
 
 interface HeroData {
-buttonExternalLink: string;
-buttonLink: string;
-buttonText: string;
-headingText: string;
 id: string;
 image: string;
 status: string;
-subheadingText: string;
 }
 
 
@@ -169,10 +164,6 @@ const handleDeleteConfirm = async (id: string | number) => {
                         <tr>
                         <th>s/n</th>
                         <th>banner image</th>
-                        <th>heading text</th>
-                        <th>sub heading text</th>
-                        <th>button text</th>
-                        <th>button link</th>
                         <th>status</th>
                         <th>action</th>
                         </tr>
@@ -185,18 +176,8 @@ const handleDeleteConfirm = async (id: string | number) => {
                                         <img src={value.image} alt="" />
                                     </div>
                                 </td>
-                                <td>{value.headingText}</td>
-                                <td>{value.subheadingText}</td>
-                                <td>{value.buttonText}</td>
-                                <td>
-                                {
-                                    value.buttonLink == "custom" ? (
-                                        value.buttonExternalLink
-                                    ) : (
-                                        value.buttonLink
-                                    )
-                                }
-                                </td>
+                               
+                              
                                 <td>
                                     <div className="radio-group">
                                     <label className="toggle-switch">

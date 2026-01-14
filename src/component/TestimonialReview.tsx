@@ -5,17 +5,16 @@ import { RxCross1 } from 'react-icons/rx';
 
 
 
-interface TestimonialInterface {
+interface GalleryInterface {  
+  galleryCategory : string;
+  galleryTitle : string;
   id: number;
-  fullname: string;
-  position: string;
-  testimonial: string;
-  rating: number;
+  image : string;
   status : string;
 }
 
 interface Props {
-  src: TestimonialInterface;
+  src: GalleryInterface;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
@@ -32,7 +31,7 @@ const TestimonialReview : React.FC<Props> = ({
   hasNext,
 }) => {
   
-  console.log(src);
+
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -43,6 +42,17 @@ const TestimonialReview : React.FC<Props> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hasPrev, hasNext]);
+
+
+
+  const formatImagePath = (fullPath: string): string => {
+        const keyword = "images/";
+        const startIndex = fullPath.indexOf(keyword);
+        if (startIndex === -1) return "Invalid path";
+        const sliceStart = startIndex + keyword.length;
+        const shortSegment = fullPath.slice(sliceStart);
+        return `${shortSegment}`;
+   };
 
   return (
     <div className="modalOverlay">
@@ -69,25 +79,21 @@ const TestimonialReview : React.FC<Props> = ({
      {/* ---------------------- */}
      <div className="positionCenter">
       <div className="testimonyPrevCon flex gap-10">
-              <div className="testimonyPrevBody text-sm text-gray-800 mb-3">{src.testimonial}</div>
 
-              <div className="reviewsStar flex gap-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i}>
-                      {i < src.rating  ? (
-                        <IoIosStar className="starFilled" />
-                      ) : (
-                        <IoIosStarOutline className="star" />
-                      )}
-                    </span>
-                  ))}
+              <div className="testimonyPrevBody text-sm text-gray-800 mb-3">
+                <div className="prevImg">
+                <p>{formatImagePath(src.image)}</p>
+                <img src={src.image} className="previewImage" />
+                </div>
               </div>
 
-              <div className="testimonyPrevTitle font-semibold">{src.fullname}</div>
+             
 
-              {src.position && (
-                <div className="testimonyPrevPosition text-xs text-gray-500">{src.position}</div>
-              )}
+              <div className="testimonyPrevTitle font-semibold">{src.galleryTitle}</div>
+
+           
+                <div className="testimonyPrevPosition text-xs text-gray-500">{src.galleryCategory}</div>
+           
 
             
            </div>

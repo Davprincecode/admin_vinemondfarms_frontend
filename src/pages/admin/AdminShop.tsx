@@ -12,12 +12,12 @@ import { useParams } from 'react-router-dom';
 import Settings from './component/Settings';
 
 
-const headers = ['orders', 'transactions', 'banners', 'all product', 'add product'];
+const headers = ['all product', 'add product'];
 
 function AdminShop() {
     
     const { param } = useParams();
-   const [activeTab, setActiveTab] = useState(param || 'orders'); 
+   const [activeTab, setActiveTab] = useState('all product'); 
    const [paymentActive, setPaymentActive] = useState<boolean>(false);
 
    const paymentFunction = () => {
@@ -53,23 +53,12 @@ function AdminShop() {
                 <div className="mainBodyDetails">
                     {
                         
-                        activeTab == 'transactions' ? (
-
-                            paymentActive ? (
-                                <Settings paymentFunction={paymentFunction}/>
-                            ) : (
-                                <ShopTransaction paymentFunction={paymentFunction}/>
-                            )
-                              
-                        ) : activeTab == 'banners' ? (
-                             <Banners />
-                        ) : activeTab == 'all product' ? (
-                            <AllProduct />
-                        ) : activeTab == 'add product' ? (
-                             <AddProduct toggleToDefault={toggleToDefault}/>
-                        ) :(
-                           <Orders />
-                        )
+                        activeTab == 'add product' ? (
+                            <AddProduct toggleToDefault={toggleToDefault}/>
+                            
+                        ) : (
+                            <AllProduct /> 
+                        ) 
                     }
                    
                 </div>

@@ -2,28 +2,15 @@ import React, { useState, useEffect} from 'react'
 import AdminTopHeader from '../../component/AdminTopHeader'
 import SideNavAdmin from '../../component/SideNavAdmin'
 import Courses from './component/Courses';
-import Schedule from './component/Schedule';
-import AddSchedule from './component/AddSchedule';
-import EditSchedule from './component/EditSchedule';
 
 
-const headers = ['schedules', 'courses'];
+
+
+
+const headers = ['consulting'];
 function AdminConsultant() {
 
-    const [activeTab, setActiveTab] = useState('schedules'); 
-
-    const [createSchedule, setCreateSchedule] = useState('default'); 
-
-    const [relBookingId, setRelBookingId] = useState<string>('');
-      
-    const scheduleToggle = (data : string) => {
-         setCreateSchedule(data);
-     }
-
-const toggleToDefault = () => {
-   setActiveTab('schedules');
-//    setCreateSchedule(!createSchedule);
-  }
+    const [activeTab, setActiveTab] = useState('consulting'); 
 
   return (
      <div className='admin-dashboard'>
@@ -49,19 +36,9 @@ const toggleToDefault = () => {
 
                   <div className="mainBodyDetails">
                     {
-                        activeTab == 'courses' ? (
+                        activeTab == 'consulting' && (
                               <Courses />
-                        ) : (
-                                
-                            createSchedule == 'create' ? (
-                                <AddSchedule scheduleToggle={scheduleToggle} toggleToDefault={toggleToDefault}/>
-                            ) : createSchedule == 'edit' ? (
-                                <EditSchedule scheduleToggle={scheduleToggle} toggleToDefault={toggleToDefault} relBookingId={relBookingId}/>
-                            ) : (
-                                <Schedule scheduleToggle={scheduleToggle} relBookingId={relBookingId} setRelBookingId={setRelBookingId}/>
-                            )                        
-                            
-                        )
+                        ) 
                     }
                    
                 </div>

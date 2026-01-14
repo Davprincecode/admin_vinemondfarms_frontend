@@ -22,20 +22,13 @@ interface Meta {
   next_page_url: string | null;
   prev_page_url: string | null;
 }
-
 interface Product {
-    productId: string;
-    productName: string;
-    productColor: string;
-    productDescription: string;
-    productImage: string[];
-    discountPrice: number;
-    productPrice: number;
-    productSize: string;
-    availableQty: string;
-    availableStockUnlimited: boolean;
-    pin : boolean;
-    status : string
+productId: string;
+productImage: string;
+productName: string;
+productPrice: number;
+productWeight: string;
+status : string;
 }
 interface HeroInterface {
   heroFunction: () => void;
@@ -229,47 +222,7 @@ setShowPopup(true);
             }
     }
 
-    const handlePin = async (id: string) => {
-    
-            const findProduct = products.find(prd => prd.productId === id);
-    
-            const pinnedCount = products.filter(prd => prd.pin).length;
-    
-            if(pinnedCount == 3 && !findProduct?.pin){
-                toast.error("Only 3 Post Can Be Pinned");
-                return
-            }else{
-    
-            }
-                    setLoading(true);
-                    const myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("Authorization", token);
-                    const requestOptions: RequestInit = {
-                        method: "GET",
-                        headers: myHeaders,
-                        redirect: "follow"
-                    };
-                    try {
-                        const response = await fetch(`${baseUrl}/pin-product/${id}`, requestOptions);
-                        if (!response.ok) {
-                        const errorResponse = await response.json();
-                        throw new Error(errorResponse.message);
-                        }
-                        const result = await response.json();   
-                            getData(page);
-                            // setLoading(false);
-                    } catch (error) {
-                        setLoading(false);
-                        if (typeof error === "object" && error !== null && "message" in error && typeof error.message === "string") {
-                        toast.error(error.message);
-                        } else {
-                        toast.error('An unknown error occurred.');
-                        }
-                        
-                    }
-    
-            };
+ 
 
 
             const responsive = {
@@ -322,16 +275,12 @@ setShowPopup(true);
         </div>
         ) 
         }
-
-        <table>
+<table>
             <tr>
                 <th>sn</th>
-                
                 <th>product</th>
-                <th>inventory</th>
                 <th>price</th>
-                <th>rating</th>
-                <th>pin post ({products.filter(prd => prd.pin).length}/3)</th>
+                <th>Weight</th>
                 <th>status</th>
                 <th>action</th>
             </tr>
@@ -340,60 +289,24 @@ setShowPopup(true);
                 products.map((item, index)=>(
                         <tr key={index}>
                         <td>{index + 1}</td>
-                        
                         <td>
-                            <div className="inv-con">
+                            <div className="gap-5 inv-con">
 
-                                <Carousel 
-                                    responsive={responsive}
-                                    autoPlay={true}
-                                    swipeable={true}
-                                    draggable={true}
-                                    showDots={false}
-                                    infinite={true}
-                                    partialVisible={false}
-                                    autoPlaySpeed={10000}
-                                    customTransition="all .5"
-                                    transitionDuration={500}
-                                >
-                                        {
-                                            item.productImage.map((item, index) => (
-                                            <div className="inv" key={index}>
-                                            <img src={item}/>
-                                            </div>
-                                            ))
-                                        }
-                                </Carousel>
-
+                       
+                                <div className="inv">
+                                <img src={item.productImage}/>
+                                </div>
+                                                                       
+                                                                   
                             <div className="invProductName">
                             <h4>{item.productName}</h4>
-                            {/* <p>{item.productSize}</p> */}
                             </div>
+                            
                             </div>
                         </td>
                         
-                        <td>{
-                        item.availableStockUnlimited  ?
-                            "unlimited" 
-                            : item.availableQty
-                            }</td>
                         <td>{item.productPrice.toLocaleString()}</td>
-                        <td>later imp</td>
-                        <td> 
-                            {
-                            item.pin ? (
-                            <div className="pin pinned" onClick={() => handlePin(item.productId)}>
-                                <RiPushpinFill />
-                            </div>
-
-                            ) : (
-                            <div className="pin notPinned" onClick={() => handlePin(item.productId)}>
-                                <RiUnpinLine />
-                            </div>
-
-                            )
-                            }
-                        </td>
+                        <td>{item.productWeight}</td>
                         <td>
                             <div className="radio-group">
                             <label className="toggle-switch">
@@ -406,6 +319,7 @@ setShowPopup(true);
                             </label>
                             </div>
                         </td>
+                        
                             <td>
                                 <div className="flex-center gap-10">
                                 <div className="delete">
@@ -421,32 +335,7 @@ setShowPopup(true);
             }
 
 
-            {/* <tr>
-            <td>1</td>
-            <td>#564563</td>
-            <td>
-                <div className="flex gap-5 inv-con">
-                    <div className="inv">
-                        <img src={invImg}/>
-                    </div>
-                    <div className="invProductName">
-                        <h4>Men Grey Hoodle</h4>
-                        <p>Hoodle</p>
-                    </div>
-                </div>
-                    
-            </td>
-            <td>1</td>
-            <td>15252</td>
-            <td>1-2</td>
-            <td>
-            <FiEdit3 />
-            <RiDeleteBin6Line />
-            </td>
-        
-            </tr> */}
-
-            
+      
 
         
         </table>

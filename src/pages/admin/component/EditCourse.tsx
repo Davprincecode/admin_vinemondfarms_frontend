@@ -284,7 +284,8 @@ const EditCourse : React.FC<HeroInterface> = ({ heroFunction, editId, setEditId 
                                         <div className="previewImage">
                                         {productImage && (
                                         <img
-                                            src={typeof productImage === "string" 
+                                            src={
+                                              typeof productImage === "string" 
                                                 ? productImage
                                                 : URL.createObjectURL(productImage)
                                               }

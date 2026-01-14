@@ -9,10 +9,10 @@ import AllProducts from './AllProducts';
 import ActiveProduct from './ActiveProduct';
 import InActiveProduct from './InActiveProduct';
 import EditProduct from './EditProduct';
-import DeliveryFee from './DeliveryFee';
 
 
-const headers = ['all', 'live', 'inactive', 'delivery'];
+
+const headers = ['all', 'live', 'inactive'];
 
 function AllProduct() {
     const [loading, setLoading] = useState<boolean>(false);
@@ -51,9 +51,7 @@ function AllProduct() {
                     <ActiveProduct heroFunction={heroFunction} editId={editId} setEditId={setEditId} />
                 ) : activeTab == 'inactive' ? (
                     <InActiveProduct heroFunction={heroFunction} editId={editId} setEditId={setEditId} />
-                ) : activeTab == 'delivery'  ? (
-                    <DeliveryFee/>
-                ) : (
+                )  : (
                     <AllProducts heroFunction={heroFunction} editId={editId} setEditId={setEditId} />
                 )
                  )

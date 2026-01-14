@@ -8,60 +8,22 @@ import './AppCustom.css'
 import './Dashboard.css'
 import 'react-multi-carousel/lib/styles.css';
 import Login from "./pages/Auth/Login";
-import Register from "./pages/Auth/Register";
-import ConfirmEmail from "./pages/ConfirmEmail";
-import RedirectForm from "./pages/Auth/RedirectForm";
-// import ForgetPassword from "./pages/Auth/ForgetPassword";
-// import ChangePassword from "./pages/Auth/ChangePassword";
-// import VerifyOtp from "./pages/Auth/VerifyOtp";
-import LandingPage from "./pages/LandingPage";
-import ContactUs from "./pages/ContactUs";
-import AboutUs from "./pages/AboutUs";
-import OurServices from "./pages/OurServices";
-import Notification from "./component/Notification";
-
-import BlogList from "./pages/BlogList";
-import BlogDetails from "./pages/BlogDetails";
-import AnimatedShuffleList from "./pages/AnimatedShuffleList";
-import ProductDetails from "./pages/ProductDetails";
-import Cart from "./pages/Cart";
-import Booking from "./pages/Booking";
-import Payment from "./pages/Payment";
-import Consultant from "./pages/Consultant";
-import ConsultantDetails from "./pages/ConsultantDetails";
-import VerifyPayment from "./pages/payment/VerifyPayment";
 import Homepage from "./pages/admin/Homepage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import Profile from "./pages/user/Profile";
 import AdminShop from "./pages/admin/AdminShop";
 import Vlog from "./pages/admin/Vlog";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminConsultant from "./pages/admin/AdminConsultant";
-import BookingCalendars from "./pages/BookingCalendars";
-import MasterCourse from "./pages/MasterCourse";
-import MasterCourseDetail from "./pages/MasterCourseDetail";
-import MasterCoursePayment from "./pages/MasterCoursePayment";
 import MessageComponent from "./pages/admin/component/MessageComponent";
-import VerifyCoursePayment from "./pages/payment/VerifyCoursePayment";
-import Shops from "./pages/Shops";
-import RichEditorTest from "./pages/admin/RichEditorTest";
-import RichEditorTest2 from "./pages/admin/RichEditorTest2";
-import TextEditor from "./pages/admin/TextEditor";
-import TextEditor2 from "./pages/admin/TextEditor2";
+import AboutUs from "./pages/admin/AboutUs";
+import Consulting from "./pages/admin/Consulting";
+import Team from "./pages/admin/Team";
 
 
 
 
 function App() {
  
-
-const {baseUrl} = userAuth();
-
- const location = useLocation();
-
-const scheduleToggle = () => {
-         
-    }
  
  return (
 
@@ -88,22 +50,19 @@ const scheduleToggle = () => {
       <Route path="/admin">
          <Route path="admin-dashboard" element={<AdminDashboard/>} />
          
-         {/* <Route path="blog-test-editor" element={<RichEditorTest/>} />
-
-         <Route path="blog-test" element={<RichEditorTest2/>} />
-         <Route path="new-blog-test" element={<TextEditor/>} />
-         <Route path="new-blog-test2" element={<TextEditor2/>} /> */}
-
-
          <Route path="home-page" element={<Homepage/>} />
          <Route path="vlog-page" element={<Vlog/>} />
          <Route path="admin-shop" element={<AdminShop />} />
-         <Route path="admin-shop/:param" element={<AdminShop />} />
+
          <Route path="admin-blog" element={< AdminBlog />} />
-         {/* <Route path="admin-blogs" element={< BlogEditor />} /> */}
+
+         <Route path="about-us" element={< AboutUs />} />
+        
          <Route path="admin-message" element={<MessageComponent />} />
-         <Route path="admin-consult" element={<AdminConsultant />} />
-         {/* <Route path="admin-schedule" element={<AddSchedule scheduleToggle={scheduleToggle}/> } /> */}
+         <Route path="admin-consult" element={<Consulting />} />
+
+         <Route path="team" element={<Team />} />
+       
       </Route>
       {/* ===================== admin end =================== */}
 

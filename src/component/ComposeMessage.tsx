@@ -93,22 +93,12 @@ const {baseUrl, token} = userAuth();
         toast.error("You need to fill the subject");
         return false;
       }
-      // if (!name.trim()) {
-      //   toast.error("You need to fill the name");
-      //   return false;
-      // }
+     
       if (!email.trim()) {
         toast.error("You need to fill the email");
         return false;
       }
-      // if (!address.trim()) {
-      //   toast.error("You need to fill the address");
-      //   return false;
-      // }
-      // if (!phoneNumber.trim()) {
-      //   toast.error("You need to fill the phone number");
-      //   return false;
-      // }
+      
       if (!message.trim()) {
         toast.error("You need to fill the message");
         return false;

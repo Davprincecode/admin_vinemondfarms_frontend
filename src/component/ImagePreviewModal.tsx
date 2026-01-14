@@ -20,6 +20,7 @@ const ImagePreviewModal: React.FC<Props> = ({
   hasPrev,
   hasNext,
 }) => {
+  
   useEffect(() => {
     
     const handleKeyDown = (e: KeyboardEvent) => {

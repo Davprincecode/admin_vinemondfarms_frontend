@@ -10,6 +10,7 @@ import { BiHome } from 'react-icons/bi';
 import { PiNewspaperClippingLight } from 'react-icons/pi';
 import ButtonPreloader from './ButtonPreloader';
 import { toast } from 'react-toastify';
+import { FaProductHunt, FaRegUser } from 'react-icons/fa';
 
 
 interface MenuItem {
@@ -30,9 +31,14 @@ interface MenuItem {
       icon : <BiHome />
     },
     {
-      title: 'shop',
+      title: 'product',
       link: '/admin/admin-shop',
-      icon : <BsShop />
+      icon : <FaProductHunt />
+    },
+    {
+      title: 'team',
+      link: '/admin/team',
+      icon : <FaRegUser />
     },
     {
       title: 'consultation',
@@ -40,20 +46,11 @@ interface MenuItem {
       icon : <LuUsers />
     },
     {
-      title: 'blog',
-      link: '/admin/admin-blog',
+      title: 'about us',
+      link: '/admin/about-us',
       icon : <PiNewspaperClippingLight />
-    },
-    {
-      title: 'vlog',
-      link: '/admin/vlog-page',
-      icon : <GoDeviceCameraVideo />
-    },
-    {
-      title: 'message',
-      link: '/admin/admin-message',
-      icon : <RxEnvelopeClosed />
-    },
+    }
+    
    
   ];
 
@@ -67,81 +64,8 @@ interface SideNavProps {
 
   const SideNavAdmin = () => {
 
-    const {baseUrl, token, role, adminLoading, logout} = userAuth(); 
-    const[loading, setLoading] = useState<boolean>(false);
-    const [activeMenu, setActiveMenu] = useState<string | null>(null);
-    const [shopActive, setShopActive] = useState<boolean>(false);
-
-    useEffect(() => {
-      handleStatus();
-  }, [])
-
-    const handleStatus = async () => {
-        setLoading(true);
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Authorization", token);
-        const requestOptions: RequestInit = {
-            method: "GET",
-            headers: myHeaders,
-            redirect: "follow"
-        };
-        try {
-            const response = await fetch(`${baseUrl}/shop-status`, requestOptions);
-           
-            if (!response.ok) {
-            const errorResponse = await response.json();
-            throw new Error(errorResponse.message);
-            }
-            const result = await response.json(); 
-            setShopActive(result.status == 'OPEN' ? true : false);
-            
-                setLoading(false);
-        } catch (error) {
-                        setLoading(false);
-                        if (typeof error === "object" && error !== null && "message" in error && typeof error.message === "string") {
-                        toast.error(error.message);
-                        } else {
-                        toast.error('An unknown error occurred.');
-                        }
-            
-        }
-
-        };
-
-
-    const handleStatusToggle = async (id: string) => {
-        setLoading(true);
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Authorization", token);
-        const requestOptions: RequestInit = {
-            method: "GET",
-            headers: myHeaders,
-            redirect: "follow"
-        };
-        try {
-            const response = await fetch(`${baseUrl}/shop/${id}`, requestOptions);
-            
-            if (!response.ok) {
-            const errorResponse = await response.json();
-            throw new Error(errorResponse.message);
-            }
-            const result = await response.json(); 
-              setShopActive(result.status == 'OPEN' ? true : false);
-                setLoading(false);
-                toast.success(result.message);
-        } catch (error) {
-                        setLoading(false);
-                        if (typeof error === "object" && error !== null && "message" in error && typeof error.message === "string") {
-                        toast.error(error.message);
-                        } else {
-                        toast.error('An unknown error occurred.');
-                        }
-            
-        }
-
-        };
+    const {adminLoading, logout} = userAuth(); 
+  
 
   return (
     <>
@@ -169,28 +93,7 @@ interface SideNavProps {
               <div className="menu-title">{menuItem.title}</div> 
             </NavLink>
 
-            {
-              menuItem.title == "shop" && (
-                 loading ? (
-                    <div className="radio-group">
-                      <ButtonPreloader/>
-                    </div>
-                 ) : (
-
-                 
-                  <div className="radio-group">
-                      <label className="toggle-switch">
-                      <input
-                      type="checkbox"
-                      checked={shopActive}
-                      onChange={() => handleStatusToggle("1")}
-                      />
-                      <span className="slider"></span>
-                      </label>
-                  </div> 
-                  )
-              )
-            }
+           
 
 
 
@@ -204,18 +107,7 @@ interface SideNavProps {
 
 <div className="nav-bottom">
 
-<div className="help">
-  <NavLink to="#" className={({ isActive }) =>
-    `${isActive ? 'active-nav' : ''}`
-  }>
-    <div className="help-flex flex-center">
-  <BsQuestionCircle />
-  <p>help</p> 
-    </div>
 
-  <p className='circle-num'>8</p>
-  </NavLink>
-</div>
 {
   adminLoading ? (
     <div className="logout-con" onClick={() => logout()}> 

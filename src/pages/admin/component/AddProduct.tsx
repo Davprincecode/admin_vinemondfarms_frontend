@@ -54,74 +54,24 @@ type popType = {
 }
 function AddProduct({toggleToDefault} : popType) {
     const {baseUrl, token} = userAuth();
-    const[tag, setTag] = useState<tagInterface[]>([]);
-    const[tagged, setTagged] = useState<tagType[]>([]);
-    const[category, setCategory] = useState<categoryInterface[]>([]);
+    
     
     const [loading, setLoading] = useState<boolean>(false);
-    const[categoryId, setCategoryId] = useState<string>('');
+  
+
+
     const [productName, setProductName] = useState<string>('');
-    const [productDescription, setProductDescription] = useState<string>('');
-    const[currency, setCurrency] = useState<string>("NGN");
-    const [price, setPrice] = useState<number>(0);
-    const [discount, setDiscount] = useState<number>(0);
-    const [productColor, setProductColor] = useState<string>('');
-     const [productSize, setProductSize] = useState<string>('');
+    const [productImage, setProductImage] = useState<File | null>(null);
+     const [price, setPrice] = useState<number>(0);
+     const [weight, setWeight] = useState<string>('');
 
-    const [productImage, setProductImage] = useState<File[]>([]);
-
-    const [measurement, setMeasurement] = useState<File | null>(null);
-    const [availableStockUnlimited, setAvailableStockUnlimited] = useState<boolean>(false);
-    const [availableQty, setAvailableQty] = useState<number>(0);
-    // ==================================================
-    const [colorImage, setColorImage] = useState<string>('');
-    const [subProductSize, setSubProductSize] = useState<string>('');
-    const [sizePrice, setSizePrice] = useState<number>(0);
-    const [stock, setStock] = useState<string>('');
-    const [color, setColor] = useState<string>('');
-    const[authAction, setAuthAction] = useState<boolean>(false);
-    const[sizeAction, setSizeAction] = useState<boolean>(false);
-    const [showPopup, setShowPopup] = useState(false);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
-    const[size, setSize] = useState<sizeInterface[]>([]);
-    const[catId, setCatId] = useState<string>('');
-    const[catPop, setCatPop] = useState<boolean>(false);
-
+    
+  
     // ==============================================
 
    const [isActive, setIsActive] = useState(false);
 
-    const [subProducts, setSubProducts] = useState<SubProduct[]>([
-    {   
-        productImage : [],
-        measurement : null,
-        productPrice : 0,
-        discountPrice : 0,
-        productColor : '',
-        productSize : '',
-        productDescription : '',
-        availableStockUnlimited : false,
-        availableQty : 0
-    }
-    ]);
-
-   const editCategoryPop = (id : string) => {
-      setCatId(id);
-      setCatPop(true);
-   }
-
-  const handleToggle = () => {
-    setIsActive(!isActive);
-  };
-
-   const availableFunction = (data : boolean) =>{
-        //  setStock(data);
-        // if(data === "unlimited"){
-          setAvailableStockUnlimited(data);
-        // }else{
-        //     setAvailableStockUnlimited(false);
-        // }
-     }
+   
 
 const [dragActive, setDragActive] = useState(false);
 
@@ -139,49 +89,48 @@ const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    // if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-    //   handleFileChange({ target: { files: e.dataTransfer.files } } as React.ChangeEvent<HTMLInputElement>);
-    //   e.dataTransfer.clearData();
-    // }
-
+   
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { 
         const droppedFiles = Array.from(e.dataTransfer.files);
-        setProductImage(prev => [...prev, ...droppedFiles]); e.dataTransfer.clearData(); 
+         handleFileChange({ target: { files: e.dataTransfer.files } } as React.ChangeEvent<HTMLInputElement>);
+          e.dataTransfer.clearData(); 
             }
   };
 
-   const handleDeleteNew = (index: number) => { 
-        setProductImage(productImage.filter((_, i) => i !== index)); 
-      };
+   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+              const file = e.target.files?.[0];
+              if (!file) {
+                  toast.error("No image selected");
+                  return;
+              }
+  
+              const image = new Image();
+              const objectUrl = URL.createObjectURL(file);
+              image.src = objectUrl;
+  
+              image.onload = () => {
+                
+                  setProductImage(file); 
+                  URL.revokeObjectURL(objectUrl);
+              };
+  
+              image.onerror = () => {
+                  toast.error("Failed to load image");
+                  URL.revokeObjectURL(objectUrl);
+              };
+          };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
-    if (e.target.files) { 
-      const selectedFiles = Array.from(e.target.files); 
-    setProductImage(prev => [...prev, ...selectedFiles]); 
-  } 
-  };
 
 
-
-  const handleMeasurementChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setMeasurement(file);
-  };
+  
 
   const validateProductForm = () => {
   if (!productName.trim()) {
     toast.error("Product name is required");
     return false;
   }
-  if (!categoryId) {
-    toast.error("category id is required");
-    return false;
-  }
-  if (!productDescription.trim()) {
-    toast.error("Product description is required");
-    return false;
-  }
+  
   if (!productImage) {
     toast.error("Product image is required");
     return false;
@@ -190,38 +139,7 @@ const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     toast.error("Valid product price is required");
     return false;
   }
-  if (!productColor.trim()) {
-    toast.error("Product color is required");
-    return false;
-  }
-  // if (!productSize.trim()) {
-  //   toast.error("Product size is required");
-  //   return false;
-  // }
-
-  if(isActive){
-    for (let i = 0; i < subProducts.length; i++) {
-    const p = subProducts[i];
-    if (!p.productPrice || isNaN(p.productPrice)) {
-      toast.error(`Sub-product ${i + 1} needs a valid price`);
-      return false;
-    }
-    if (!p.productColor.trim()) {
-      toast.error(`Sub-product ${i + 1} needs a color`);
-      return false;
-    }
-    // if (!p.productSize.trim()) {
-    //   toast.error(`Sub-product ${i + 1} needs a size`);
-    //   return false;
-    // }
-    if (!p.productImage) {
-      toast.error(`Sub-product ${i + 1} needs an image`);
-      return false;
-    }
-  }
-  }
-  // Optional: Validate subProducts
-  
+    
 
   return true;
 };
@@ -238,59 +156,11 @@ const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     }
         const formdata = new FormData();
         formdata.append("productName",  productName);
-        formdata.append("productDescription",  productDescription);
-        // formdata.append("productImage", productImage);
-
-        productImage.forEach((file, index) => { formdata.append("productImage[]", file); });
-
-        formdata.append("currency", currency);
+        formdata.append("productImage", productImage);
         formdata.append("productPrice", price.toString());
-        formdata.append("discountPrice", discount.toString());
-        formdata.append("productColor", productColor);
-        if(productSize){
-         formdata.append("productSize", productSize); 
-        }
-        formdata.append("categoryId", categoryId);
-        formdata.append("availableStockUnlimited", availableStockUnlimited ? "1" : "0");
-        if(measurement){
-          formdata.append('sizeMeasurement', measurement);
-        }
-        if(availableQty){
-            formdata.append("availableQty", availableQty.toString());
-        }
+        formdata.append('productWeight', weight);
+
        
-        //  sub product
-        if (subProducts.length > 0 && isActive) {
-
-            subProducts.forEach((sub, index) => { sub.productImage.forEach(file => { 
-              formdata.append(`products[${index}][productImage][]`, file); }); 
-              formdata.append(`products[${index}][productColor]`, sub.productColor); 
-              formdata.append(`products[${index}][productSize]`, sub.productSize); 
-              formdata.append(`products[${index}][productPrice]`, sub.productPrice.toString()); 
-
-              formdata.append(`products[${index}][availableStockUnlimited]`, 
-                sub.availableStockUnlimited ? "1" : "0"
-              ); 
-              
-              if (sub.discountPrice) { 
-                formdata.append(`products[${index}][discountPrice]`, 
-                  sub.discountPrice.toString()); 
-                } 
-
-              if (!sub.availableStockUnlimited && sub.availableQty != null) { 
-                formdata.append( `products[${index}][availableQty]`, 
-                sub.availableQty.toString() 
-                ); }
-
-
-                });
-        }
-//   sub product end
-        if(tagged.length > 0){
-            tagged.forEach((tag, index) => {
-              formdata.append(`tags[${index}][tagName]`, tag.tagName);
-             });
-        }
         const myHeaders = new Headers();
         myHeaders.append("Authorization", token);
         const requestOptions: RequestInit = {
@@ -300,10 +170,7 @@ const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
             redirect: "follow"
         };
         try {
-            const response = await fetch(`${baseUrl}/product`, requestOptions); 
-            // const results = await response.text();  
-            // console.log(results);
-             
+            const response = await fetch(`${baseUrl}/product`, requestOptions);    
             if (!response.ok) {
             const errorResponse = await response.json();
             throw new Error(errorResponse.message);
@@ -313,19 +180,13 @@ const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
                 toast.success("Data Upload Successfully"); 
                           
                 setProductName('');
-                setProductDescription('');
-                setProductImage([]);
-                // setCurrency('');
+           
+                setProductImage(null);
+               
                 setPrice(0);
-                setDiscount(0);
-                setProductColor('');
-                setProductSize('');
-                setCategoryId('');
-                setAvailableStockUnlimited(false);
-                setMeasurement(null);
-                setAvailableQty(0);
-                setTagged([]);
-                setSubProducts([]);
+
+                setWeight('');
+            
                 toggleToDefault();
         } catch (error) {
                         setLoading(false);
@@ -339,194 +200,6 @@ const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
       
   }
 
-  useEffect(() => {
-        handleCategory()
-        handleSize()
-      }, []);
-
-  const handleTags = async () => {
-
-            setLoading(true);
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-              myHeaders.append("Authorization", token);
-              const requestOptions: RequestInit = {
-                  method: "GET",
-                  headers: myHeaders,
-                  redirect: "follow"
-              };
-              try {
-                  const response = await fetch(`${baseUrl}/product-tag`, requestOptions);
-                  if (!response.ok) {
-                  const errorResponse = await response.json();
-                  throw new Error(errorResponse.message);
-                  }
-                  const result = await response.json();  
-                   setTag(result);
-                   setLoading(false);
-              } catch (error) {
-                        setLoading(false);
-                        if (typeof error === "object" && error !== null && "message" in error && typeof error.message === "string") {
-                        toast.error(error.message);
-                        } else {
-                        toast.error('An unknown error occurred.');
-                        }
-                  
-              }
-    
-  }
-
-  const handleCategory = async () => {
-            setLoading(true);
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-              myHeaders.append("Authorization", token);
-              const requestOptions: RequestInit = {
-                  method: "GET",
-                  headers: myHeaders,
-                  redirect: "follow"
-              };
-              try {
-                  const response = await fetch(`${baseUrl}/product-category`, requestOptions);
-                  if (!response.ok) {
-                  const errorResponse = await response.json();
-                  throw new Error(errorResponse.message);
-                  }
-                  const result = await response.json(); 
-                   setCategory(result.data);
-                   setLoading(false);
-              } catch (error) {
-                        setLoading(false);
-                        if (typeof error === "object" && error !== null && "message" in error && typeof error.message === "string") {
-                        toast.error(error.message);
-                        } else {
-                        toast.error('An unknown error occurred.');
-                        }   
-              }
-  }
-
-  const handleSize = async () => {
-
-            setLoading(true);
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-              myHeaders.append("Authorization", token);
-              const requestOptions: RequestInit = {
-                  method: "GET",
-                  headers: myHeaders,
-                  redirect: "follow"
-              };
-              try {
-                  const response = await fetch(`${baseUrl}/product-size`, requestOptions);
-                  if (!response.ok) {
-                  const errorResponse = await response.json();
-                  throw new Error(errorResponse.message);
-                  }
-                  const result = await response.json();        
-                   setSize(result);
-                   setLoading(false);
-              } catch (error) {
-                        setLoading(false);
-                        if (typeof error === "object" && error !== null && "message" in error && typeof error.message === "string") {
-                        toast.error(error.message);
-                        } else {
-                        toast.error('An unknown error occurred.');
-                        }   
-              }
-  }
-
-const handleAddSubProduct = () => {
-  if(isActive){
-    setSubProducts([...subProducts, { 
-        productImage : [],
-        measurement : null,
-        productPrice : 0,
-        discountPrice : 0,
-        productColor : '',
-        productSize : '',
-        productDescription : '',
-        availableStockUnlimited :  true,
-        availableQty : 0
-    }]);
-  } else{
-       setIsActive(!isActive);
-  }
-    
-  };
-
-const handleTagged = (tagName: string) => {
-  setTagged([...tagged, { tagName }]);
-};
-const removeTag = (indexToRemove: number) => {
-  setTagged(prev => prev.filter((_, index) => index !== indexToRemove));
-};
-
-const handleSelectedCategory = (data : string) => {
-    setCategoryId(data);  
-}
-
-const handleSubProductChange = <K extends keyof SubProduct>( index: number, field: K, value: SubProduct[K] ) => 
-  { 
-    const updated = [...subProducts]; 
-    updated[index][field] = value; setSubProducts(updated); 
-
-  };
-
-const handleSubFileChange = (index: number, files: FileList | null) => { 
-  if (!files) return; const updated = [...subProducts]; 
-  const newFiles = Array.from(files); 
-  updated[index].productImage = [...(updated[index].productImage || []), ...newFiles]; 
-  setSubProducts(updated); 
-};
-
-
-
-const handleSubMeasurementFileChange =  (index: number, file: File | null) => {
-  const updated = [...subProducts];
-  updated[index].measurement = file;
-  setSubProducts(updated);
-};
-
-
- const handleDeleteClick = (id: string) => {
-        setSelectedId(id);
-        setShowPopup(true);
-        };
-
-const handleDeleteConfirm = async (id: string | number) => {
-    setLoading(true);
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", token);
-    const requestOptions: RequestInit = {
-        method: "DELETE",
-        headers: myHeaders,
-        redirect: "follow"
-    };
-    try {
-        const response = await fetch(`${baseUrl}/product-category/${id}`, requestOptions);
-        if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse.message);
-        }
-        const result = await response.json();   
-        setLoading(false);
-        setShowPopup(false);
-        setSelectedId(null);
-        setLoading(false);
-        setCategory(category.filter(item => item.id !== id));
-        toast.error("delete successfully");
-    } catch (error) {
-                setLoading(false);
-                if (typeof error === "object" && error !== null && "message" in error && typeof error.message === "string") {
-                toast.error(error.message);
-                } else {
-                toast.error('An unknown error occurred.');
-                }
-        
-    }
-
-};
 
   return (
     <div>
@@ -545,68 +218,20 @@ const handleDeleteConfirm = async (id: string | number) => {
             </div>
 
             <div className="admin-input">
-              <label>Product Description</label>
-              <textarea name="description" value={productDescription} onChange={(e) => setProductDescription(e.target.value) } placeholder="Product Description" />
+              <label>Product Price</label>
+              <input type="number"  min="0" value={price} onChange={(e) => setPrice(parseInt(e.target.value))} placeholder="Enter Price" />
             </div>
 
             <div className="admin-input">
-              <label>Product Color</label>
-              <input value={productColor} onChange={(e) => setProductColor(e.target.value) } placeholder="Product Color" />
+              <label>Product Size Type</label>
+              <input type="text"   value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Enter Product Size e.g kg, g, fresh, pack, bundle, turkey, wrap" />
             </div>
+           
 
-            <div className="admin-input">
-              <label>Product Size</label>
-
-               {
-                    loading ? (
-                    <ButtonPreloader/>
-                    ) : (
-                  <select value={productSize} onChange={(e) => setProductSize(e.target.value) }>
-                        <option value="">Product Size</option>
-                     {
-                      size.map((value, index)=>(
-                        <option value={value.id}>{value.sizeName}</option>
-                    )) 
-                     }  
-
-                    </select>
-
-                    )
-                    
-                }
-              
-              <div className="createNew" onClick={() => setSizeAction(!sizeAction)}>
-                create new size
-              </div>
-            </div>
 
           </div>
 
-          {/* Categories */}
-          <div className="prod-category">
-            <div className="admin-prod-title">Categories</div>
-                {
-                    loading ? (
-                    <ButtonPreloader/>
-                    ) : (
-                       category.map((value, index)=>(
-                        <div className="prod-cat-item flex-center gap-10" >
-                        <input 
-                            type="checkbox"
-                            checked={categoryId === value.id} 
-                            onChange={()=>handleSelectedCategory(value.id)}
-                        />
-                        <p>{value.categoryName}</p>
-
-                           <RiEditFill className='edit' onClick={() => editCategoryPop(value.id)}/>
-                        </div>
-                    )) 
-
-                    )
-                    
-                }
-            <div className="create-new"  onClick={() => setAuthAction(!authAction)}>Create New</div>
-          </div>
+         
         </div>
 
         {/* Image & Tags */}
@@ -627,279 +252,32 @@ const handleDeleteConfirm = async (id: string | number) => {
             </div>
           </div>
 
-          <div className="prod-category">
-            <div className="admin-prod-title">Tags</div>
-            <div className="admin-input">
-              <label>Add Tags</label>
-              <input
-              type="text"
-              placeholder="Enter Tag Name"
-              onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-              handleTagged(e.currentTarget.value);
-              }
-              }}
-            />
-
-            </div>
-            <div className="addTags flex-center gap-10">
-              {
-              tagged.map((tag, index) => (
-                <div key={index} className="addTag flex-center gap-10">
-                  <p>{tag.tagName}</p>
-                  <RxCross2 onClick={() => removeTag(index)} />
-                </div>
-              ))
-              }
-            </div>
-
-            {/* <div className="create-new">Create New</div> */}
-             <div className="admin-input color-image">
-                        <p>Measurement</p>
-                    <label htmlFor={`file-measurement`} > <FiUploadCloud /> Upload measurement</label>
-                    <input id={`file-measurement`} type="file" onChange={handleMeasurementChange} 
-                    />
-                </div>
-          </div>
+          
         </div>
         
 
         <div className="flex-wrap justification-between">
               <div className="previewImage">
-                      {productImage.length > 0 && (
-                        productImage.map((item, index)=> (
-                          <div key={index} className="imgPrev"> 
+                      {productImage && (
+                        
+                          <div className="imgPrev"> 
                             <img
-                            key={index}
-                            src={URL.createObjectURL(item)}
+                            src={URL.createObjectURL(productImage)}
                             alt="Preview"
                             style={{ width: '150px', height: 'auto', marginTop: '10px' }}
                             />
-                            <MdCancel onClick={() => handleDeleteNew(index)} /> 
+                            
                             </div>
-                            ))
+                           
                          
                       )}
               </div>
               
-              <div className="previewImage">
-                            {measurement && (
-                            <img
-                            src={URL.createObjectURL(measurement)}
-                            alt="Preview"
-                            style={{ width: '150px', height: 'auto', marginTop: '10px' }}
-                            />
-                            )}
-              </div>
           </div>
         
-        {/* Pricing */}
-        <div className="product-form-top flex justification-between">
-          <div className="admin-prd-form">
-            <div className="admin-prod-title">Price</div>
-            <div className="admin-flex-input flex-center gap-10">
+       
 
-              <div className="flex-center gap-10 admin-short">
-                    {/* <div className="admin-input input-short">
-                    <label>Currency</label>
-                    <select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    >
-                    <option value="NGN">NGN</option>
-                    <option value="USD">USD</option>
-                    <option value="GHS">GHS</option>
-                    <option value="ZAR">ZAR</option>
-                    <option value="KES">KES</option>
-                    <option value="XOF">XOF</option>
-                    </select>
-                    </div> */}
-                    <div className="admin-input">
-                      <label>Product Price</label>
-                      <input type="number"  min="0" value={price} onChange={(e) => setPrice(parseInt(e.target.value))} placeholder="Enter Price" />
-                    </div>
-              </div>
-
-              <div className="admin-input discount-input">
-                <label>Discount Price</label>
-                <input  type="number" min="0" value={discount} onChange={(e) => setDiscount(parseInt(e.target.value))} placeholder="Enter Discount" />
-              </div>
-            </div>
-
-            <div className="admin-flex-input flex-center gap-10">
-                  <div className="admin-input">
-                  <label>Available Stock</label>
-                  <select
-                  value={availableStockUnlimited === true ? "true" : "false"}
-                  onChange={(e) => availableFunction(e.target.value === "true")}
-                  >
-                  <option value="">Available stock</option>
-                  <option value="true">Unlimited</option>
-                  <option value="false">Custom</option>
-                  </select>
-                  </div>
-
-               {
-                !availableStockUnlimited && (
-                      <div className="admin-input">
-                      <label>Available Quantity</label>
-                      <input  type="number" min="0" value={availableQty} onChange={(e) => setAvailableQty(parseInt(e.target.value))}  />
-                      </div>
-                )
-               }
-              
-
-            </div>
-
-          </div>
-        </div>
-
-        {/* Variants */}
-        <div className="product-form-top flex justification-between">
-          <div className="admin-prd-form">
-
-            <div className="admin-prod-title">Different Option</div>
-
-                <div className="switch-con-flex flex-center gap-10">
-                  <div className="radio-group">
-                        <label className="toggle-switch">
-                            <input type="checkbox" checked={isActive} onChange={handleToggle} />
-                            <span className="slider"></span>
-                        </label>
-                    </div>  <p>This product has multiple options</p>
-                </div>
-                {
-                  isActive && (
-
-                        subProducts.map((subProduct, index) => (
-                        
-                        <div key={index} className="sub-product">
-                            <h2>product {index + 1}</h2>  
-
-                                <div className="admin-flex-input flex-center gap-10">
-
-                                        <div className="admin-input">
-                                        <label>Color</label>
-                                        <input
-                                        type="text"
-                                        value={subProduct.productColor}
-                                        onChange={(e) => handleSubProductChange(index, 'productColor', e.target.value)}
-                                        placeholder="Enter Color"
-                                        />
-                                        </div>
-
-                                    <div className="admin-input color-image">
-                                        <p>Color Image</p>
-                                    <label htmlFor={`file-color-input-${index}`} > <FiUploadCloud /> Upload Color Image</label>
-
-                                    <input id={`file-color-input-${index}`} 
-                                      type="file"
-                                      multiple 
-                                      onChange={(e) => handleSubFileChange(index, e.target.files)
-                                     } 
-
-                                    />
-                                    </div>
-                                </div>
-
-                            <div className="ColorPreview">
-                                {
-                                subProduct.productImage && subProduct.productImage.map((file, i) => ( 
-                                <img key={i} src={URL.createObjectURL(file)} alt="Preview" style={{ width: '100px', height: '100px', marginTop: '10px' }} /> 
-                                ))}
-                            </div>
-
-                                <div className="admin-flex-input flex-center gap-10">
-
-                                    <div className="admin-input">
-                                    <label>Size</label>
-                                    
-
-                                    {
-                                      loading ? (
-                                      <ButtonPreloader/>
-                                      ) : (
-                                      <select value={subProduct.productSize}
-                                       onChange={(e) => handleSubProductChange(index, 'productSize', e.target.value)}>
-                                      <option value="">Product Size</option>
-                                          {
-                                          size.map((value, index)=>(
-                                          <option value={value.id}>{value.sizeName}</option>
-                                          )) 
-                                          }  
-                                      </select>
-
-                                      )
-
-                                    }
-                                    <div className="createNew" onClick={() => setSizeAction(!sizeAction)}>
-                                      create new size
-                                    </div>
-                                    </div>
-
-                                    <div className="admin-input">
-                                    <label>Price</label>
-                                    <input
-                                    type="number"
-                                    min="0"
-                                    value={subProduct.productPrice}
-                                    onChange={(e) => handleSubProductChange(index, 'productPrice', parseFloat(e.target.value))}
-                                    placeholder="Price"
-                                    />
-                                    </div>
-                                </div>
-
-                                <div className="admin-flex-input flex-center gap-10">
-
-                                    <div className="admin-input">
-                                    <label>Discount Price</label>
-                                    <input
-                                    type="number"
-                                    min="0"
-                                    value={subProduct.discountPrice}
-                                    onChange={(e) => handleSubProductChange(index, 'discountPrice', parseFloat(e.target.value))}
-                                    placeholder="Price"
-                                    />
-                                    </div>
-
-                                    <div className="admin-input">
-                                      <label>Available stock</label>
-                                      <select
-                                        value={subProduct.availableStockUnlimited ? "true" : "false"}
-                                        onChange={(e) =>
-                                          handleSubProductChange(index, 'availableStockUnlimited', e.target.value === "true")
-                                        }
-                                      >
-                                        <option value="">Available stock</option>
-                                        <option value="true">Unlimited</option>
-                                        <option value="false">Custom</option>
-                                      </select>
-                                      </div>
-
-                                </div>
-
-                        {!subProduct.availableStockUnlimited && (
-                        <div className="admin-input">
-                        <label>Available Quantity</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={subProduct.availableQty ?? 0}
-                          onChange={(e) =>
-                            handleSubProductChange(index, 'availableQty', parseInt(e.target.value))
-                          }
-                        />
-                        </div>
-                        )}
-
-                        </div>
-                        ))
-                  )  
-                }
-           <div className="addmore" onClick={handleAddSubProduct}> add more </div>
-          </div>
-        </div>
-
+      
         {/* Submit Button */}
         <div className="btn-wrapper">
            {
@@ -915,22 +293,9 @@ const handleDeleteConfirm = async (id: string | number) => {
         </div>
       </div>
         
-       {
-        catPop && (
-          <EditCategory catId={catId} catPop={catPop} setCatPop={setCatPop} setCategory={setCategory}/>
-        )
-       }
        
-       <CategoryProductPop authAction={authAction} setAuthAction={setAuthAction} setCategory={setCategory}/>
 
-       <SizePop sizeAction={sizeAction} setSizeAction={setSizeAction} setSize={setSize}/>
-
-        <DeletePopup
-          isOpen={showPopup}
-          itemId={selectedId ?? ""}
-          onCancel={() => setShowPopup(false)}
-          onDelete={handleDeleteConfirm}
-        />
+     
 
     </div>
   );

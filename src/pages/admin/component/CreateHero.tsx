@@ -26,68 +26,17 @@ const CreateHero = ({toggleToDefault}:popType) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [bannerImage, setBannerImage] = useState<File | null>(null);
    
-
-    const [headerText, setHeaderText] = useState<string>('');
-    const [subHeadLine, setSubHeadLine] = useState<string>('');
-    const [buttonText, setButtonText] = useState<string>('');
-
-
-    const [buttonLink, setButtonLink] = useState('');
-  const [buttonExternalLink, setButtonExternalLink] = useState('');
-
     const validateForm = () => {
         // New fields
         if (!bannerImage) {
             toast.error("You need to upload a banner image");
             return false;
         }
-        if (!headerText.trim()) {
-            toast.error("You need to fill the header text");
-            return false;
-        }
-        if (!subHeadLine.trim()) {
-            toast.error("You need to fill the subheadline");
-            return false;
-        }
-        if (!buttonText.trim()) {
-            toast.error("You need to fill the button text");
-            return false;
-        }
-        if (!buttonLink.trim() && !buttonExternalLink.trim()) {
-            toast.error("You need to provide a button link or external link");
-            return false;
-        }
+
 
         return true;
         };
 
-
-        const charCount = headerText.replace(/\s/g, '').length;
-        const subHeadLineCount = subHeadLine.replace(/\s/g, '').length;
-        const buttonCount = buttonText.replace(/\s/g, '').length;
-
-        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const input = e.target.value;
-            const nonSpaceCount = input.replace(/\s/g, '').length;
-            if (nonSpaceCount <= 45) {
-            setHeaderText(input);
-            }
-        };
-
-        const handleSubHeadLine = (e: { target: { value: any; }; }) => {
-            const input = e.target.value;
-            const nonSpaceCount = input.replace(/\s/g, '').length;
-            if (nonSpaceCount <= 120) {
-            setSubHeadLine(input);
-            }
-        };
-        const handleButtonText = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const input = e.target.value;
-            const nonSpaceCount = input.replace(/\s/g, '').length;
-            if (nonSpaceCount <= 16) {
-            setButtonText(input);
-            }
-        };
 
         const [dragActive, setDragActive] = useState(false);
         
@@ -113,40 +62,33 @@ const CreateHero = ({toggleToDefault}:popType) => {
         
 
         const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) {
-            toast.error("No image selected");
-            return;
-        }
-
-        const image = new Image();
-        const objectUrl = URL.createObjectURL(file);
-        image.src = objectUrl;
-
-        image.onload = () => {
-            if (image.width > 1440 || image.height > 802) {
-            toast.error(`Image "${file.name}" exceeds 1500x1500`);
-            URL.revokeObjectURL(objectUrl);
-            return;
+            const file = e.target.files?.[0];
+            if (!file) {
+                toast.error("No image selected");
+                return;
             }
 
-            setBannerImage(file); 
-            URL.revokeObjectURL(objectUrl);
-        };
+            const image = new Image();
+            const objectUrl = URL.createObjectURL(file);
+            image.src = objectUrl;
 
-        image.onerror = () => {
-            toast.error("Failed to load image");
-            URL.revokeObjectURL(objectUrl);
-        };
-        };
-         const handleLinkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-                    const selected = e.target.value;
-                    setButtonLink(selected);
+            image.onload = () => {
+                // if (image.width > 1440 || image.height > 802) {
+                // toast.error(`Image "${file.name}" exceeds 1500x1500`);
+                // URL.revokeObjectURL(objectUrl);
+                // return;
+                // }
 
-                    if (selected !== 'custom') {
-                    setButtonExternalLink('');
-                    }
-           };
+                setBannerImage(file); 
+                URL.revokeObjectURL(objectUrl);
+            };
+
+            image.onerror = () => {
+                toast.error("Failed to load image");
+                URL.revokeObjectURL(objectUrl);
+            };
+        };
+        
 
         const handleHeroBanner = async() => {
               if(!validateForm()){  
@@ -160,12 +102,7 @@ const CreateHero = ({toggleToDefault}:popType) => {
                 }
                 const formdata = new FormData();
                 formdata.append('image', bannerImage);
-                formdata.append('headingText', headerText);
-                formdata.append('subheadingText', subHeadLine);
-                formdata.append('buttonText', buttonText);
-                formdata.append('buttonLink', buttonLink);
-                formdata.append('buttonExternalLink', buttonExternalLink);
-
+               
                 const myHeaders = new Headers();
                 myHeaders.append("Authorization", token);
                 const requestOptions: RequestInit = {
@@ -182,11 +119,6 @@ const CreateHero = ({toggleToDefault}:popType) => {
                     }
                     const result = await response.json();    
                     setBannerImage(null);
-                    setHeaderText('');
-                    setSubHeadLine('');
-                    setButtonText('');
-                    setButtonLink('');
-                    setButtonExternalLink('');
                     setLoading(false); 
                     toast.success("Data Upload Successfully");  
                     toggleToDefault();
@@ -208,6 +140,7 @@ const CreateHero = ({toggleToDefault}:popType) => {
             <div className="admin-hero-header flex-center justification-between">
                 <h4>Create Hero Banner</h4>
             </div>
+            
             <div   
             className={`admin-hero-img ${dragActive ? 'drag-active' : ''}`}
                             onDragEnter={handleDrag}
@@ -220,8 +153,7 @@ const CreateHero = ({toggleToDefault}:popType) => {
                 <label htmlFor="file-input"><FaFileArrowUp /></label>
                 <input id="file-input" type="file" onChange={handleFileChange} />
                 <p>Drop your image here,</p> 
-                <p>or browse</p>
-                <p className='size'>1440 x 802 px</p>  
+                <p>or browse</p> 
             </div>
 
              <div className="previewImage">
@@ -235,59 +167,6 @@ const CreateHero = ({toggleToDefault}:popType) => {
              </div>
 
             <div className="admin-hero-form">
-
-                <div className="admin-input">
-                    <div className="input-header-flex flex-center justification-between">
-                    <label >Headline Text</label>
-                    <div className="input-header">{charCount}/45 character</div>
-                    </div>
-                    <input type="text" placeholder="Headline Text"  value={headerText} onChange={handleChange}/>
-                </div>
-
-                <div className="admin-input">
-                    <div className="input-header-flex flex-center justification-between">
-                    <label >Sub Headline</label>
-                    <div className="input-header">{subHeadLineCount}/120 character</div>
-                    </div>
-                <textarea cols={10} rows={5} 
-                placeholder="Sub Headline" value={subHeadLine}
-                 onChange={handleSubHeadLine}></textarea>
-                </div>
-
-                <div className="admin-input">
-                     <div className="input-header-flex flex-center justification-between">
-                    <label >Button Text</label>
-                    <div className="input-header">{buttonCount}/16 character</div>
-                    </div>
-                    
-                    <input type="text" placeholder="Button Text" value={buttonText} onChange={handleButtonText}/>
-                </div>
-
-                <div className="admin-input">
-                    
-                    <div className="input-header-flex flex-center justification-between">
-                    <label >Button Link</label>
-                    </div>
-                    <select name="" id="" value={buttonLink} onChange={handleLinkChange}>
-                         <option value="">Select Link</option>
-                        <option value="product">Shop Now</option>
-                        <option value="consultant">Book Consultation</option>
-                        <option value="master-course">Buy Course</option>
-                        <option value="custom">External Link</option>
-                    </select>
-                </div>
-
-                {buttonLink === 'custom' && (
-                <div className="admin-input">
-                    <div className="input-header">External Link</div>
-                    <input
-                    type="text"
-                    placeholder="Enter External Link"
-                    value={buttonExternalLink}
-                    onChange={(e) => setButtonExternalLink(e.target.value)}
-                    />
-                </div>
-                )}
             
                 {
                 loading ? (

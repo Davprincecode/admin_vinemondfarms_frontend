@@ -2,15 +2,20 @@ import React, { useState, useEffect} from 'react'
 import AdminTopHeader from '../../component/AdminTopHeader'
 import SideNavAdmin from '../../component/SideNavAdmin'
 import AllBlog from './component/AllBlog';
-import BlogEditor from './component/BlogEditor';
-import AddBlog from './component/AddBlog';
 import EditBlog from './component/EditBlog';
+import AddAboutUs from './component/AddAboutUs';
+import EditAboutUs from './component/EditAboutUs';
+import AllAboutUs from './component/AllAboutUs';
+import EditConsulting from './component/EditConsulting';
+import AllConsulting from './component/AllConsulting';
+import AddConsulting from './component/AddConsulting';
 // import GoogleDocsEditor from './component/GoogleDocsEditor';
 
 
-const headers = ['all blog posts', 'add blog post'];
-function AdminConsultant() {
-      const [activeTab, setActiveTab] = useState('all blog posts'); 
+const headers = ['consulting', 'create consulting'];
+
+function Consulting() {
+      const [activeTab, setActiveTab] = useState('consulting'); 
       const [editHero, setEditHero] = useState<boolean>(false);
       const [editId, setEditId] = useState<string>('');
 
@@ -19,7 +24,7 @@ function AdminConsultant() {
       }
 
   const toggleToDefault = () => {
-   setActiveTab('all blog posts');
+   setActiveTab('consulting');
   }
   return (
      <div className='admin-dashboard'>
@@ -45,15 +50,15 @@ function AdminConsultant() {
 
                   <div className="mainBodyDetails">
                     {
-                        activeTab == 'all blog posts' ? (
+                        activeTab == 'consulting' ? (
                              editHero ? (
-                                    <EditBlog heroFunction={heroFunction} editId={editId} setEditId={setEditId}/>
+                                    <EditConsulting heroFunction={heroFunction} editId={editId} setEditId={setEditId}/>
                                 ) : (
-                                  <AllBlog   heroFunction={heroFunction} setEditId={setEditId}/>
+                                  <AllConsulting  heroFunction={heroFunction} setEditId={setEditId}/>
                               )
 
                         ) : (
-                          <AddBlog  toggleToDefault={toggleToDefault}/>
+                          < AddConsulting  toggleToDefault={toggleToDefault}/>
                         )
                     }
                    
@@ -68,4 +73,4 @@ function AdminConsultant() {
   )
 }
 
-export default AdminConsultant
+export default Consulting

@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import AdminTopHeader from '../../component/AdminTopHeader'
 import SideNavAdmin from '../../component/SideNavAdmin'
 import Hero from './component/Hero'
-import Testimonial from './component/Testimonial'
-import ShopTransaction from './component/ShopTransaction'
 import Gallery from './component/Gallery'
-import BrandLogo from './component/BrandLogo'
+import Team from './component/Testimonial'
 
-const headers = ['hero sliders', 'gallery', 'brand logos', 'testimonials'];
+
+const headers = ['hero sliders', 'gallery'];
 
 function Homepage() {
 
@@ -41,10 +40,6 @@ function Homepage() {
                     {
                         activeTab == 'gallery' ? (
                               <Gallery />
-                        ) : activeTab == 'brand logos' ? (
-                             <BrandLogo/>
-                        ) : activeTab == 'testimonials' ? (
-                            <Testimonial/>
                         ) : (
                             <Hero />
                         )
