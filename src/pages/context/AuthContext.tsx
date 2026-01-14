@@ -116,9 +116,9 @@ import {useLocation, useNavigate } from 'react-router-dom';
     const navigate = useNavigate();
     const location = useLocation();
    
-    const [baseUrl] = useState<string>('http://127.0.0.1:8000/api/v1');
+    // const [baseUrl] = useState<string>('http://127.0.0.1:8000/api/v1');
     
-    // const [baseUrl] = useState<string>('https://api.loveafrikgroup.com/api/v1');
+     const [baseUrl] = useState<string>('https://vineapi.softnetprofessionals.com/api/v1');
 
   // ==========================================
     const [userId, setUserId] = useState<string>('');
